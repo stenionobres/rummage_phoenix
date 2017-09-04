@@ -52,6 +52,7 @@ defmodule Rummage.Phoenix.SearchView do
 
     button_class = Keyword.get(link_params, :button_class, "btn btn-primary")
     button_label = Keyword.get(link_params, :button_label, "Search")
+    placeholder =  Keyword.get(link_params, :placeholder, "")
     fields = Keyword.fetch!(link_params, :fields)
 
     form_for(conn, apply(opts[:helpers], String.to_atom("#{opts[:struct]}_path"), [conn, :index]), [as: :rummage, method: :get], fn(f) ->
@@ -62,7 +63,7 @@ defmodule Rummage.Phoenix.SearchView do
         elem(inputs_for(f, :search, fn(s) ->
           {
             :safe,
-            inner_form(s, fields, search)
+            inner_form(s, fields, search, placeholder)
           }
           end), 1) ++
         elem(submit(raw(button_label), class: button_class), 1)
@@ -70,7 +71,7 @@ defmodule Rummage.Phoenix.SearchView do
     end)
   end
 
-  defp inner_form(s, fields, search) do
+  defp inner_form(s, fields, search, placeholder) do
     Enum.map(fields, fn(field) ->
       field_name = elem(field, 0)
       field_params = elem(field, 1)
@@ -87,7 +88,7 @@ defmodule Rummage.Phoenix.SearchView do
           :safe,
           elem(hidden_input(e, :search_type, value: search_type, class: "form-control"), 1) ++
           elem(hidden_input(e, :assoc, value: assoc, class: "form-control"), 1) ++
-          elem(search_input(e, :search_term, value: search[Atom.to_string(field_name)]["search_term"], class: "form-control"), 1)
+          elem(search_input(e, :search_term, value: search[Atom.to_string(field_name)]["search_term"], class: "form-control", placeholder: placeholder), 1)
         }
         end), 1)
     end) |> Enum.reduce([], & &2 ++ &1)
