@@ -52,10 +52,11 @@ defmodule Rummage.Phoenix.SearchView do
 
     button_class = Keyword.get(link_params, :button_class, "btn btn-primary")
     button_label = Keyword.get(link_params, :button_label, "Search")
+    form_class = Keyword.get(link_params, :form_class, "")
     placeholder =  Keyword.get(link_params, :placeholder, "")
     fields = Keyword.fetch!(link_params, :fields)
 
-    form_for(conn, apply(opts[:helpers], String.to_atom("#{opts[:struct]}_path"), [conn, :index]), [as: :rummage, method: :get], fn(f) ->
+    form_for(conn, apply(opts[:helpers], String.to_atom("#{opts[:struct]}_path"), [conn, :index]), [as: :rummage, method: :get, class: form_class], fn(f) ->
       {
         :safe,
         elem(hidden_input(f, :sort, value: sort, class: "form-control"), 1) ++
